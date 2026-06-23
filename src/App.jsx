@@ -726,7 +726,7 @@ export default function App() {
   // typeタブ切替時に区フィルタをリセット
   const handleTypeChange = (t) => { setActiveType(t); setFilterDistrict("全て"); };
 
-  const ALL_FACILITIES = useMemo(() => [...FACILITIES_RAW, ...extraFacilities], [extraFacilities]);
+  const ALL_FACILITIES = useMemo(() => [...FACILITIES_RAW, ...(Array.isArray(extraFacilities) ? extraFacilities : [])], [extraFacilities]);
 
   const typeFiltered = useMemo(() =>
     activeType === "全て" ? ALL_FACILITIES : ALL_FACILITIES.filter(f => f.type === activeType),
