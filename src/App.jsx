@@ -382,8 +382,7 @@ export default function App() {
     <div style={{ minHeight:"100vh", background:"#f8fafc", fontFamily:"-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
       <style>{`
         @media (max-width: 640px) {
-          .mobile-hide { display: none !important; }
-          .mobile-small { font-size: 11px !important; }
+          .pc-only { display: none !important; }
         }
       `}</style>
       <div style={{ background:"#fff", borderBottom:"1px solid #f1f5f9", padding:"0 24px", position:"sticky", top:0, zIndex:100 }}>
