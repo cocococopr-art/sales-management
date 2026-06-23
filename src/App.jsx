@@ -51,8 +51,8 @@ function Modal({ facility, visits, onClose, onSave }) {
     upd("childTypes", cur.includes(t) ? cur.filter(x=>x!==t) : [...cur, t]);
   };
   return (
-    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.55)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:"16px" }}>
-      <div style={{ background:"#fff", borderRadius:"16px", width:"100%", maxWidth:"760px", maxHeight:"90vh", overflow:"auto", boxShadow:"0 24px 64px rgba(0,0,0,0.2)" }}>
+    <div style={{ position:"fixed", inset:0, background:"rgba(15,23,42,0.55)", zIndex:1000, display:"flex", alignItems:"flex-end", justifyContent:"center", padding:"0" }}>
+      <div style={{ background:"#fff", borderRadius:"16px 16px 0 0", width:"100%", maxWidth:"760px", maxHeight:"92vh", overflow:"auto", boxShadow:"0 -4px 32px rgba(0,0,0,0.15)" }}>
         <div style={{ padding:"24px 28px 20px", borderBottom:"1px solid #f1f5f9", position:"sticky", top:0, background:"#fff", zIndex:10, borderRadius:"16px 16px 0 0" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
@@ -98,7 +98,7 @@ function Modal({ facility, visits, onClose, onSave }) {
             </div>
           </Section>
           <Section title="📅 訪問記録">
-            <div style={{ display:"grid", gridTemplateColumns:"130px 1fr 1fr", gap:"8px", marginBottom:"8px" }}>
+            <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(120px, 1fr))", gap:"8px", marginBottom:"8px" }}>
               <input type="date" value={newVisit.date} onChange={e=>setNewVisit(v=>({...v,date:e.target.value}))} style={inputStyle} />
               <input value={newVisit.who} onChange={e=>setNewVisit(v=>({...v,who:e.target.value}))} placeholder="対応者（先方）" style={inputStyle} />
               <input value={newVisit.talkAbout} onChange={e=>setNewVisit(v=>({...v,talkAbout:e.target.value}))} placeholder="話した内容" style={inputStyle} />
@@ -389,7 +389,7 @@ export default function App() {
               <div style={{ fontSize:"11px", color:"#94a3b8" }}>大阪市 福祉施設リスト</div>
             </div>
           </div>
-          <div style={{ display:"flex", gap:"6px", alignItems:"center" }}>
+          <div style={{ display:"flex", gap:"6px", alignItems:"center", flexWrap:"wrap" }}>
             {msg && <span style={{ fontSize:"12px", color:"#059669", fontWeight:600, padding:"4px 10px", background:"#f0fdf4", borderRadius:"6px" }}>{msg}</span>}
             <button onClick={exportCSV} style={{ padding:"6px 12px", borderRadius:"7px", border:"1px solid #e2e8f0", background:"#fff", color:"#64748b", fontSize:"13px", cursor:"pointer" }}>📥 CSV出力</button>
             <button onClick={()=>fileInputRef.current.click()} style={{ padding:"6px 12px", borderRadius:"7px", border:"1px solid #e2e8f0", background:"#fff", color:"#64748b", fontSize:"13px", cursor:"pointer" }}>📂 CSV読込</button>
@@ -407,8 +407,8 @@ export default function App() {
           </div>
         </div>
       </div>
-      <div style={{ maxWidth:"1400px", margin:"0 auto", padding:"24px" }}>
-        <div style={{ display:"flex", gap:"8px", marginBottom:"20px" }}>
+      <div style={{ maxWidth:"1400px", margin:"0 auto", padding:"16px" }}>
+        <div style={{ display:"flex", gap:"8px", marginBottom:"20px", overflowX:"auto", paddingBottom:"4px" }}>
           {TYPE_TABS.map(t => {
             const count = t==="全て"?facilities.length:facilities.filter(f=>f.type===t).length;
             const active = activeType===t;
@@ -422,7 +422,7 @@ export default function App() {
             );
           })}
         </div>
-        <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:"12px", marginBottom:"20px" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(140px, 1fr))", gap:"12px", marginBottom:"20px" }}>
           {[{label:"総施設数",value:stats.total,icon:"🏢",color:"#6366f1"},{label:"訪問済",value:stats.visited,icon:"✅",color:"#0ea5e9"},{label:"商談中",value:stats.inProgress,icon:"⚡",color:"#f59e0b"},{label:"契約済",value:stats.contracted,icon:"🎉",color:"#22c55e"}].map(s=>(
             <div key={s.label} style={{ background:"#fff", borderRadius:"12px", padding:"16px 20px", border:"1px solid #f1f5f9" }}>
               <div style={{ fontSize:"22px", marginBottom:"4px" }}>{s.icon}</div>
@@ -431,7 +431,7 @@ export default function App() {
             </div>
           ))}
         </div>
-        <div style={{ background:"#fff", borderRadius:"12px", padding:"16px 20px", border:"1px solid #f1f5f9", marginBottom:"16px", display:"flex", gap:"10px", flexWrap:"wrap", alignItems:"center" }}>
+        <div style={{ background:"#fff", borderRadius:"12px", padding:"12px 16px", border:"1px solid #f1f5f9", marginBottom:"16px", display:"flex", gap:"8px", flexWrap:"wrap", alignItems:"center" }}>
           <div style={{ display:"flex", flex:"1 1 200px", gap:"6px", minWidth:"200px" }}>
             <input value={searchInput} onChange={e=>setSearchInput(e.target.value)} onKeyDown={e=>{ if(e.key==="Enter") setSearch(searchInput); }}
               placeholder="🔍  施設名・法人名で検索..." style={{ flex:1, padding:"8px 12px", borderRadius:"8px", border:"1px solid #e2e8f0", fontSize:"13px", outline:"none" }} />
