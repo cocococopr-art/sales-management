@@ -380,6 +380,12 @@ export default function App() {
 
   return (
     <div style={{ minHeight:"100vh", background:"#f8fafc", fontFamily:"-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" }}>
+      <style>{`
+        @media (max-width: 640px) {
+          .mobile-hide { display: none !important; }
+          .mobile-small { font-size: 11px !important; }
+        }
+      `}</style>
       <div style={{ background:"#fff", borderBottom:"1px solid #f1f5f9", padding:"0 24px", position:"sticky", top:0, zIndex:100 }}>
         <div style={{ maxWidth:"1400px", margin:"0 auto", display:"flex", alignItems:"center", justifyContent:"space-between", height:"60px" }}>
           <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
@@ -391,13 +397,13 @@ export default function App() {
           </div>
           <div style={{ display:"flex", gap:"6px", alignItems:"center", flexWrap:"wrap" }}>
             {msg && <span style={{ fontSize:"12px", color:"#059669", fontWeight:600, padding:"4px 10px", background:"#f0fdf4", borderRadius:"6px" }}>{msg}</span>}
-            <button onClick={exportCSV} style={{ padding:"6px 12px", borderRadius:"7px", border:"1px solid #e2e8f0", background:"#fff", color:"#64748b", fontSize:"13px", cursor:"pointer" }}>📥 CSV出力</button>
-            <button onClick={()=>fileInputRef.current.click()} style={{ padding:"6px 12px", borderRadius:"7px", border:"1px solid #e2e8f0", background:"#fff", color:"#64748b", fontSize:"13px", cursor:"pointer" }}>📂 CSV読込</button>
+            <button onClick={exportCSV} style={{ padding:"6px 12px", borderRadius:"7px", border:"1px solid #e2e8f0", background:"#fff", color:"#64748b", fontSize:"13px", cursor:"pointer", display:"var(--btn-display, flex)" }}>📥 CSV出力</button>
+            <button onClick={()=>fileInputRef.current.click()} style={{ padding:"6px 12px", borderRadius:"7px", border:"1px solid #e2e8f0", background:"#fff", color:"#64748b", fontSize:"13px", cursor:"pointer", display:"var(--btn-display, flex)" }}>📂 CSV読込</button>
             <input ref={fileInputRef} type="file" accept=".csv" style={{ display:"none" }} onChange={e=>{ handleFileImport(e.target.files[0]); e.target.value=""; }} />
-            <button onClick={loadFromSheets} disabled={loading} style={{ padding:"6px 12px", borderRadius:"7px", border:"1px solid #e2e8f0", background:"#f0fdf4", color:"#059669", fontSize:"13px", cursor:"pointer", opacity:loading?0.6:1 }}>
+            <button onClick={loadFromSheets} disabled={loading} style={{ padding:"6px 10px", borderRadius:"7px", border:"1px solid #e2e8f0", background:"#f0fdf4", color:"#059669", fontSize:"12px", cursor:"pointer", opacity:loading?0.6:1, whiteSpace:"nowrap" }}>
               {loading?"⏳ 同期中...":"🔄 Sheets同期"}
             </button>
-            <button onClick={()=>setShowAddModal(true)} style={{ padding:"6px 14px", borderRadius:"7px", border:"none", background:"#6366f1", color:"#fff", fontSize:"13px", fontWeight:700, cursor:"pointer" }}>＋ 施設追加</button>
+            <button onClick={()=>setShowAddModal(true)} style={{ padding:"6px 10px", borderRadius:"7px", border:"none", background:"#6366f1", color:"#fff", fontSize:"12px", fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>＋ 追加</button>
             <div style={{ width:"1px", height:"24px", background:"#e2e8f0", margin:"0 4px" }} />
             {["list","kanban"].map(v=>(
               <button key={v} onClick={()=>setView(v)} style={{ padding:"6px 14px", borderRadius:"7px", border:"1px solid", borderColor:view===v?"#6366f1":"#e2e8f0", background:view===v?"#eef2ff":"transparent", color:view===v?"#4338ca":"#64748b", fontSize:"13px", fontWeight:600, cursor:"pointer" }}>
@@ -408,13 +414,13 @@ export default function App() {
         </div>
       </div>
       <div style={{ maxWidth:"1400px", margin:"0 auto", padding:"16px" }}>
-        <div style={{ display:"flex", gap:"8px", marginBottom:"20px", overflowX:"auto", paddingBottom:"4px" }}>
+        <div style={{ display:"flex", gap:"8px", marginBottom:"16px", overflowX:"auto", paddingBottom:"8px", WebkitOverflowScrolling:"touch" }}>
           {TYPE_TABS.map(t => {
             const count = t==="全て"?facilities.length:facilities.filter(f=>f.type===t).length;
             const active = activeType===t;
             const col = TYPE_COLORS[t];
             return (
-              <button key={t} onClick={()=>handleTypeChange(t)} style={{ padding:"10px 22px", borderRadius:"10px", border:`2px solid ${active?col.border:"#e2e8f0"}`, background:active?col.bg:"#fff", color:active?col.text:"#64748b", fontSize:"14px", fontWeight:active?800:500, cursor:"pointer", display:"flex", alignItems:"center", gap:"8px" }}>
+              <button key={t} onClick={()=>handleTypeChange(t)} style={{ padding:"8px 14px", borderRadius:"10px", border:`2px solid ${active?col.border:"#e2e8f0"}`, background:active?col.bg:"#fff", color:active?col.text:"#64748b", fontSize:"13px", fontWeight:active?800:500, cursor:"pointer", display:"flex", alignItems:"center", gap:"6px", whiteSpace:"nowrap", flexShrink:0 }}>
                 <span style={{ width:"8px", height:"8px", borderRadius:"50%", background:active?col.dot:"#cbd5e1", display:"inline-block" }} />
                 {t}
                 <span style={{ fontSize:"12px", background:active?col.border:"#f1f5f9", color:active?"#fff":"#94a3b8", borderRadius:"20px", padding:"1px 8px", fontWeight:700 }}>{count}</span>
