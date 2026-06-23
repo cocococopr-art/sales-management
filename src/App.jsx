@@ -204,6 +204,7 @@ export default function App() {
   const [visits, setVisits] = useState({});
   const [selected, setSelected] = useState(null);
   const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [activeType, setActiveType] = useState("全て");
   const [filterDistrict, setFilterDistrict] = useState("全て");
   const [filterProgress, setFilterProgress] = useState("全て");
@@ -559,8 +560,20 @@ export default function App() {
 
         {/* Filters */}
         <div style={{ background:"#fff", borderRadius:"12px", padding:"16px 20px", border:"1px solid #f1f5f9", marginBottom:"16px", display:"flex", gap:"10px", flexWrap:"wrap", alignItems:"center" }}>
-          <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="🔍  施設名・法人名で検索..."
-            style={{ flex:"1 1 180px", padding:"8px 12px", borderRadius:"8px", border:"1px solid #e2e8f0", fontSize:"13px", outline:"none", minWidth:"180px" }} />
+          <div style={{ display:"flex", flex:"1 1 180px", gap:"6px", minWidth:"180px" }}>
+            <input value={searchInput} onChange={e=>setSearchInput(e.target.value)}
+              onKeyDown={e=>{ if(e.key==="Enter") setSearch(searchInput); }}
+              placeholder="🔍  施設名・法人名で検索..."
+              style={{ flex:1, padding:"8px 12px", borderRadius:"8px", border:"1px solid #e2e8f0", fontSize:"13px", outline:"none" }} />
+            <button onClick={()=>setSearch(searchInput)}
+              style={{ padding:"8px 16px", borderRadius:"8px", border:"none", background:"#6366f1", color:"#fff", fontSize:"13px", fontWeight:700, cursor:"pointer", whiteSpace:"nowrap" }}>
+              検索
+            </button>
+            {search && <button onClick={()=>{ setSearch(""); setSearchInput(""); }}
+              style={{ padding:"8px 12px", borderRadius:"8px", border:"1px solid #e2e8f0", background:"#f8fafc", color:"#64748b", fontSize:"13px", cursor:"pointer" }}>
+              ✕
+            </button>}
+          </div>
           <select value={filterDistrict} onChange={e=>setFilterDistrict(e.target.value)} style={{ padding:"8px 12px", borderRadius:"8px", border:"1px solid #e2e8f0", fontSize:"13px", color:"#374151", outline:"none" }}>
             {districts.map(d=><option key={d}>{d}</option>)}
           </select>
