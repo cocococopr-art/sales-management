@@ -239,7 +239,39 @@ export default function App() {
       try { localStorage.setItem("visits_data", JSON.stringify(next)); } catch(e) {}
       return next;
     });
-  }, []);
+    // GASに全項目送信
+    const facility = [...FACILITIES_RAW, ...extraFacilities].find(f => f.id === id) || {};
+    const GAS_URL = import.meta.env.VITE_GAS_URL;
+    if (GAS_URL) {
+      const lastVisit = (data.history || []).slice(-1)[0] || {};
+      const lastContact = (data.contacts || []).slice(-1)[0] || {};
+      fetch(GAS_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          facilityId: id,
+          facilityName: facility.name || "",
+          facilityType: facility.type || "",
+          district: facility.district || "",
+          corp: facility.corp || "",
+          tel: facility.tel || "",
+          address: facility.address || "",
+          progress: data.progress || "",
+          visitCount: (data.history || []).length,
+          rep: data.rep || "",
+          contactName: lastContact.name || "",
+          contactRole: lastContact.role || "",
+          cardReceived: lastContact.card ? "あり" : "",
+          visitDate: lastVisit.date || "",
+          talkAbout: lastVisit.talkAbout || "",
+          outcome: lastVisit.outcome || "",
+          concerns: data.concerns || "",
+          memo: data.memo || "",
+        }),
+      }).catch(()=>{});
+    }
+  }, [extraFacilities]);
 
   // 施設追加
   const addFacility = (f) => {
@@ -381,7 +413,7 @@ export default function App() {
           return [...manual, ...facilities];
         });
       }
-    } catch(e) {}
+    } catch(e) { console.error('Sheets load error:', e); setImportMsg('⚠ Sheets読込失敗: ' + e.message); }
   };
 
   // typeタブ切替時に区フィルタをリセット
