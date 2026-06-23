@@ -229,7 +229,6 @@ export default function App() {
       const e = localStorage.getItem("extra_facilities");
       if (e) { const arr = JSON.parse(e); if(Array.isArray(arr)) { setExtraFacilities(arr); if(arr.length) nextIdRef.current = Math.max(...arr.map(x=>x.id))+1; } }
     } catch(e) {}
-    localStorage.removeItem("extra_facilities");
     autoLoadFromSheets();
   }, []);
 
@@ -377,7 +376,10 @@ export default function App() {
         ...(afterschool ? parseFacilities(afterschool, "放課後等デイサービス") : []),
       ];
       if (facilities.length > 0) {
-        setExtraFacilities(facilities);
+        setExtraFacilities(prev => {
+          const manual = Array.isArray(prev) ? prev.filter(f => !f.fromSheets) : [];
+          return [...manual, ...facilities];
+        });
       }
     } catch(e) {}
   };
