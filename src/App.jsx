@@ -378,11 +378,7 @@ export default function App() {
 
       // 営業記録シートから進捗を読み込む
       try {
-        let records = null;
-        const tryNames = ["営業記録", "営業記録 ", "営業記録\u3000", "シート1", "Sheet1"];
-        for (const sn of tryNames) {
-          try { const r = await fetchSheet(sn); if (r && r.length > 0) { records = r; break; } } catch(e2) {}
-        }
+        const records = await fetchSheet("営業記録");
         if (records && records.length > 0) {
           const visitMap = {};
           records.forEach(r => {
