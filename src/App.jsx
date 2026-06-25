@@ -387,7 +387,7 @@ export default function App() {
         }
         if (records && records.length > 0) {
           const nameToId = {};
-          facilitiesRef.current.forEach(f => { nameToId[f.name] = f.id; });
+          sheetData.forEach(f => { nameToId[f.name] = f.id; });
           const visitMap = {};
           records.forEach(r => {
             const fid = nameToId[r["施設名"]];
