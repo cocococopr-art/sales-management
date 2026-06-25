@@ -376,16 +376,13 @@ export default function App() {
       const sheetData = [...parseRows(child,"児童発達支援"), ...parseRows(after,"放課後等デイサービス")];
       setFacilities(prev => [...sheetData, ...prev.filter(f=>!f.fromSheets)]);
 
-      // 営業記録シートから進捗を読み込む（実際のシート名を取得）
+      // 営業記録シートから進捗を読み込む
       try {
-        const metaUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}?key=${API_KEY}&fields=sheets.properties.title`;
-        const metaRes = await fetch(metaUrl);
-        const meta = await metaRes.json();
-        const allSheetNames = (meta.sheets||[]).map(s=>s.properties.title);
-        console.log("全シート名:", allSheetNames); const recordSheetName = allSheetNames.find(n=>n.includes("営業")) || "営業記録";
-        const records = await fetchSheet(recordSheetName);
-        console.log("営業記録データ:", records); console.log("件数:", records ? records.length : 0);
-        showMsg(`📊 ${recordSheetName}: ${records ? records.length : 0}件読込`, 6000);
+        let records = null;
+        const tryNames = ["営業記録", "営業記録 ", "営業記録\u3000", "シート1", "Sheet1"];
+        for (const sn of tryNames) {
+          try { const r = await fetchSheet(sn); if (r && r.length > 0) { records = r; break; } } catch(e2) {}
+        }
         if (records && records.length > 0) {
           const visitMap = {};
           records.forEach(r => {
