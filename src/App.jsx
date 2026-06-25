@@ -386,9 +386,11 @@ export default function App() {
           records = json.records || [];
         }
         if (records && records.length > 0) {
+          const nameToId = {};
+          facilitiesRef.current.forEach(f => { nameToId[f.name] = f.id; });
           const visitMap = {};
           records.forEach(r => {
-            const fid = parseInt(r["施設ID"]);
+            const fid = nameToId[r["施設名"]];
             if (!fid) return;
             // 同じ施設IDは最新（後の行）で上書き
             const existing = visitMap[fid] || { history: [], contacts: [] };
