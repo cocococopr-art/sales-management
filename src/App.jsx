@@ -375,6 +375,42 @@ export default function App() {
       const [child, after] = await Promise.all([fetchSheet("児童発達支援"), fetchSheet("放課後等デイサービス")]);
       const sheetData = [...parseRows(child,"児童発達支援"), ...parseRows(after,"放課後等デイサービス")];
       setFacilities(prev => [...sheetData, ...prev.filter(f=>!f.fromSheets)]);
+
+      // 営業記録シートから進捗を読み込む
+      try {
+        const records = await fetchSheet("営業記録");
+        if (records && records.length > 0) {
+          const visitMap = {};
+          records.forEach(r => {
+            const fid = parseInt(r["施設ID"]);
+            if (!fid) return;
+            // 同じ施設IDは最新（後の行）で上書き
+            const existing = visitMap[fid] || { history: [], contacts: [] };
+            visitMap[fid] = {
+              progress: r["進捗"] || existing.progress || "未接触",
+              rep: r["代表者名"] || existing.rep || "",
+              concerns: r["課題・ニーズ"] || existing.concerns || "",
+              memo: r["メモ"] || existing.memo || "",
+              history: r["訪問回数"] && parseInt(r["訪問回数"]) > 0
+                ? Array.from({length: parseInt(r["訪問回数"])}, (_, i) => ({
+                    count: i+1,
+                    date: i === parseInt(r["訪問回数"])-1 ? (r["訪問日"]||"") : "",
+                    who: "", talkAbout: i === parseInt(r["訪問回数"])-1 ? (r["話した内容"]||"") : "",
+                    outcome: i === parseInt(r["訪問回数"])-1 ? (r["次のアクション"]||"") : "",
+                  }))
+                : existing.history,
+              contacts: r["対応者名"] ? [{ name: r["対応者名"], role: r["役職"]||"", card: r["名刺有無"]==="あり" }] : existing.contacts,
+              childTypes: existing.childTypes || [],
+            };
+          });
+          setVisits(prev => {
+            const merged = { ...visitMap, ...prev };
+            try { localStorage.setItem("visits_data", JSON.stringify(merged)); } catch(e){}
+            return merged;
+          });
+        }
+      } catch(e) {}
+
       showMsg(`✅ Sheetsから${sheetData.length}件を同期しました`);
     } catch(e) { showMsg("⚠ Sheets読込失敗: "+e.message); }
     setLoading(false);
