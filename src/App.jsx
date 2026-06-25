@@ -395,19 +395,19 @@ export default function App() {
             // 同じ施設IDは最新（後の行）で上書き
             const existing = visitMap[fid] || { history: [], contacts: [] };
             visitMap[fid] = {
-              progress: r["進捗"] || existing.progress || "未接触",
+              progress: r["進捗ステータス"] || existing.progress || "未接触",
               rep: r["代表者名"] || existing.rep || "",
-              concerns: r["課題・ニーズ"] || existing.concerns || "",
+              concerns: r["施設の課題・ニーズ"] || existing.concerns || "",
               memo: r["メモ"] || existing.memo || "",
-              history: r["訪問回数"] && parseInt(r["訪問回数"]) > 0
-                ? Array.from({length: parseInt(r["訪問回数"])}, (_, i) => ({
+              history: r["訪問日"]
+                ? Array.from({length: 1}, (_, i) => ({
                     count: i+1,
-                    date: i === parseInt(r["訪問回数"])-1 ? (r["訪問日"]||"") : "",
-                    who: "", talkAbout: i === parseInt(r["訪問回数"])-1 ? (r["話した内容"]||"") : "",
-                    outcome: i === parseInt(r["訪問回数"])-1 ? (r["次のアクション"]||"") : "",
+                    date: true ? (r["訪問日"]||"") : "",
+                    who: "", talkAbout: true ? (r["話した内容"]||"") : "",
+                    outcome: true ? (r["結果・次のアクション"]||"") : "",
                   }))
                 : existing.history,
-              contacts: r["対応者名"] ? [{ name: r["対応者名"], role: r["役職"]||"", card: r["名刺有無"]==="あり" }] : existing.contacts,
+              contacts: r["対応者名"] ? [{ name: r["対応者名"], role: r["対応者役職"]||"", card: r["名刺有無"]==="あり" }] : existing.contacts,
               childTypes: existing.childTypes || [],
             };
           });
