@@ -382,8 +382,9 @@ export default function App() {
         const metaRes = await fetch(metaUrl);
         const meta = await metaRes.json();
         const allSheetNames = (meta.sheets||[]).map(s=>s.properties.title);
-        const recordSheetName = allSheetNames.find(n=>n.includes("営業")) || "営業記録";
+        console.log("全シート名:", allSheetNames); const recordSheetName = allSheetNames.find(n=>n.includes("営業")) || "営業記録";
         const records = await fetchSheet(recordSheetName);
+        console.log("営業記録データ:", records); console.log("件数:", records ? records.length : 0);
         showMsg(`📊 ${recordSheetName}: ${records ? records.length : 0}件読込`, 6000);
         if (records && records.length > 0) {
           const visitMap = {};
