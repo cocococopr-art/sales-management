@@ -376,9 +376,15 @@ export default function App() {
       const sheetData = [...parseRows(child,"児童発達支援"), ...parseRows(after,"放課後等デイサービス")];
       setFacilities(prev => [...sheetData, ...prev.filter(f=>!f.fromSheets)]);
 
-      // 営業記録シートから進捗を読み込む
+      // 営業記録シートから進捗を読み込む（GAS経由）
       try {
-        const records = await fetchSheet("営業記録");
+        const GAS_URL = import.meta.env.VITE_GAS_URL;
+        let records = null;
+        if (GAS_URL) {
+          const res = await fetch(GAS_URL + "?action=getRecords");
+          const json = await res.json();
+          records = json.records || [];
+        }
         if (records && records.length > 0) {
           const visitMap = {};
           records.forEach(r => {
