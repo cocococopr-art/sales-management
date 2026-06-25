@@ -404,7 +404,7 @@ export default function App() {
             };
           });
           setVisits(prev => {
-            const merged = { ...visitMap, ...prev };
+            const merged = { ...prev, ...visitMap };
             try { localStorage.setItem("visits_data", JSON.stringify(merged)); } catch(e){}
             return merged;
           });
