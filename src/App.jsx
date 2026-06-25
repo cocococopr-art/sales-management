@@ -334,8 +334,12 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
   const nextIdRef = useRef(90000);
+  const facilitiesRef = useRef([]);
+
 
   const showMsg = (text, ms=4000) => { setMsg(text); setTimeout(()=>setMsg(""), ms); };
+
+  useEffect(() => { facilitiesRef.current = facilities; }, [facilities]);
 
   useEffect(() => {
     try { const v = localStorage.getItem("visits_data"); if(v) setVisits(JSON.parse(v)); } catch(e){}
@@ -384,23 +388,20 @@ export default function App() {
     });
     const GAS_URL = import.meta.env.VITE_GAS_URL;
     if (GAS_URL) {
-      setFacilities(prev => {
-        const facility = prev.find(f=>f.id===id)||{};
-        const lastVisit = (data.history||[]).slice(-1)[0]||{};
-        const lastContact = (data.contacts||[]).slice(-1)[0]||{};
-        fetch(GAS_URL, {
-          method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
-          body: JSON.stringify({
-            facilityId:id, facilityName:facility.name||"", facilityType:facility.type||"",
-            district:facility.district||"", corp:facility.corp||"", tel:facility.tel||"", address:facility.address||"",
-            progress:data.progress||"", visitCount:(data.history||[]).length, rep:data.rep||"",
-            contactName:lastContact.name||"", contactRole:lastContact.role||"", cardReceived:lastContact.card?"あり":"",
-            visitDate:lastVisit.date||"", talkAbout:lastVisit.talkAbout||"", outcome:lastVisit.outcome||"",
-            concerns:data.concerns||"", memo:data.memo||"",
-          }),
-        }).catch(()=>{});
-        return prev;
-      });
+      const facility = facilitiesRef.current.find(f=>f.id===id)||{};
+      const lastVisit = (data.history||[]).slice(-1)[0]||{};
+      const lastContact = (data.contacts||[]).slice(-1)[0]||{};
+      fetch(GAS_URL, {
+        method:"POST", mode:"no-cors", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          facilityId:id, facilityName:facility.name||"", facilityType:facility.type||"",
+          district:facility.district||"", corp:facility.corp||"", tel:facility.tel||"", address:facility.address||"",
+          progress:data.progress||"", visitCount:(data.history||[]).length, rep:data.rep||"",
+          contactName:lastContact.name||"", contactRole:lastContact.role||"", cardReceived:lastContact.card?"あり":"",
+          visitDate:lastVisit.date||"", talkAbout:lastVisit.talkAbout||"", outcome:lastVisit.outcome||"",
+          concerns:data.concerns||"", memo:data.memo||"",
+        }),
+      }).catch(()=>{});
     }
   }, []);
 
